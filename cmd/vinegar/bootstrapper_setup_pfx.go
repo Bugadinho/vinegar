@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"slices"
 
+	"github.com/pojntfx/go-gettext/pkg/i18n"
 	"github.com/sewnie/wine/dxvk"
 	"github.com/sewnie/wine/peutil"
 	"github.com/sewnie/wine/webview2"
@@ -17,7 +18,7 @@ import (
 
 func (b *bootstrapper) setupPrefix() error {
 	defer b.performing()()
-	b.message("Setting up Wine")
+	b.message(i18n.Local("Setting up Wine"))
 
 	// Handles Wineprefix initialization as necessary
 	if err := b.pfx.Start(); err != nil {
@@ -32,7 +33,7 @@ func (b *bootstrapper) setupPrefix() error {
 		return nil
 	}
 
-	b.message("Checking Wineprefix")
+	b.message(i18n.Local("Checking Wineprefix"))
 
 	f, err := peutil.Open(filepath.Join(
 		b.pfx.Dir(), "drive_c", "windows", "system32", "kernelbase.dll"))
@@ -67,7 +68,7 @@ func (b *bootstrapper) setupDxvk() error {
 	// DLL overrides to be present.
 
 	new := b.cfg.Studio.Renderer.DXVKVersion()
-	b.message("Checking DXVK", "version", new)
+	b.message(i18n.Local("Checking DXVK"), "version", new)
 
 	current, err := dxvk.Version(b.pfx)
 	if err != nil {
@@ -77,7 +78,7 @@ func (b *bootstrapper) setupDxvk() error {
 	if current == new {
 		return nil
 	}
-	b.message("Downloading DXVK", "current", current, "new", new)
+	b.message(i18n.Local("Downloading DXVK"), "current", current, "new", new)
 
 	name := filepath.Join(dirs.Cache, "dxvk-"+new+".tar.gz")
 	if _, err := os.Stat(name); err == nil {
@@ -102,7 +103,7 @@ install:
 	}
 	defer f.Close()
 
-	b.message("Extracting DXVK", "version", new)
+	b.message(i18n.Local("Extracting DXVK"), "version", new)
 
 	if err := dxvk.Extract(b.pfx, f); err != nil {
 		return fmt.Errorf("extract: %w", err)
@@ -115,11 +116,11 @@ func (b *bootstrapper) setupWebView() error {
 	new := b.cfg.Studio.WebView.String()
 
 	installer := filepath.Join(dirs.Cache, "webview-"+new+".exe")
-	b.message("Checking WebView", "version", new)
+	b.message(i18n.Local("Checking WebView"), "version", new)
 
 	current := webview2.Current(b.pfx)
 	if current != "" && current != new {
-		b.message("Uninstalling WebView", "current", current, "new", new)
+		b.message(i18n.Local("Uninstalling WebView"), "current", current, "new", new)
 		if err := webview2.Uninstall(b.pfx, current); err != nil {
 			return fmt.Errorf("uninstall: %w", err)
 		}
@@ -130,7 +131,7 @@ func (b *bootstrapper) setupWebView() error {
 
 	if _, err := os.Stat(installer); err != nil {
 		stop := b.performing()
-		b.message("Fetching WebView", "upload", b.cfg.Studio.WebView)
+		b.message(i18n.Local("Fetching WebView"), "upload", b.cfg.Studio.WebView)
 		webview2.Client.Transport.(*http.Transport).DisableCompression = true
 		d, err := webview2.Stable.Runtime(new, "x64")
 		if err != nil {
@@ -138,13 +139,13 @@ func (b *bootstrapper) setupWebView() error {
 		}
 		stop()
 
-		b.message("Downloading WebView", "catalog", d.Delivery.CatalogID)
+		b.message(i18n.Local("Downloading WebView"), "catalog", d.Delivery.CatalogID)
 		if err := netutil.DownloadProgress(d.URL, installer, &b.pbar); err != nil {
 			return fmt.Errorf("download: %w", err)
 		}
 	}
 
-	b.message("Installing WebView", "path", installer)
+	b.message(i18n.Local("Installing WebView"), "path", installer)
 	defer b.performing()()
 
 	return webview2.Install(b.pfx, installer)

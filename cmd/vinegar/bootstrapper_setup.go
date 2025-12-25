@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	cp "github.com/otiai10/copy"
+	"github.com/pojntfx/go-gettext/pkg/i18n"
 	"github.com/vinegarhq/vinegar/internal/config"
 	"github.com/vinegarhq/vinegar/internal/dirs"
 	"github.com/vinegarhq/vinegar/internal/gutil"
@@ -30,7 +31,7 @@ func (b *bootstrapper) setup() error {
 
 	if b.rbx.Security == "" && !pfxFirstRun {
 		stop := b.performing()
-		b.message("Acquiring user authentication")
+		b.message(i18n.Local("Acquiring user authentication"))
 		if err := b.app.getSecurity(); err != nil {
 			slog.Warn("Retrieving authenticated user failed", "err", err)
 		}
@@ -67,7 +68,7 @@ func (b *bootstrapper) setupOverlay() error {
 		return err
 	}
 
-	b.message("Copying Overlay")
+	b.message(i18n.Local("Copying Overlay"))
 
 	return cp.Copy(dir, b.dir)
 }
@@ -83,7 +84,7 @@ func (b *bootstrapper) stepPrepareRun() error {
 		return fmt.Errorf("fflags: %w", err)
 	}
 
-	gutil.IdleAdd(func() { b.status.SetLabel("Launching Studio") })
+	gutil.IdleAdd(func() { b.status.SetLabel(i18n.Local("Launching Studio")) })
 
 	// The following registry modifications starts and prepares Wine.
 	slog.Info("Kickstarting Wineserver")
@@ -121,7 +122,7 @@ func (b *bootstrapper) stepApplyFFlags() error {
 		}
 	}
 
-	b.message("Applying FFlags")
+	b.message(i18n.Local("Applying FFlags"))
 	if err := f.Apply(b.dir); err != nil {
 		return fmt.Errorf("apply fflags: %w", err)
 	}

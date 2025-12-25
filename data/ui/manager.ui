@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Created with Cambalache 0.96.3 -->
-<interface>
+<interface domain="vinegar">
   <!-- interface-name manager.ui -->
   <requires lib="gio" version="2.0"/>
   <requires lib="gtk" version="4.18"/>
@@ -47,7 +47,7 @@
                                     <property name="child">
                                       <object class="AdwButtonContent" id="btnc-run">
                                         <property name="icon-name">mail-mark-junk-symbolic</property>
-                                        <property name="label">Uninitialized</property>
+                                        <property name="label" translatable="yes">Uninitialized</property>
                                       </object>
                                     </property>
                                     <property name="name">stkpage-btn</property>
@@ -92,7 +92,7 @@
                     <property name="header-suffix">
                       <object class="GtkButton" id="btn-prefix-config">
                         <property name="icon-name">preferences-system-symbolic</property>
-                        <property name="tooltip-text">Additional Options</property>
+                        <property name="tooltip-text" translatable="yes">Additional Options</property>
                         <style>
                           <class name="flat"/>
                         </style>
@@ -100,11 +100,11 @@
                     </property>
                     <property name="sensitive">False</property>
                     <property name="separate-rows">False</property>
-                    <property name="title">Wine</property>
+                    <property name="title" translatable="yes">Wine</property>
                     <child>
                       <object class="AdwEntryRow" id="entry-prefix-run">
                         <property name="show-apply-button">True</property>
-                        <property name="title">Run Wine Command</property>
+                        <property name="title" translatable="yes">Run Wine Command</property>
                       </object>
                     </child>
                   </object>
@@ -124,13 +124,13 @@
       <item>
         <attribute name="action">win.prefix-kill</attribute>
         <attribute name="icon">process-stop-symbolic</attribute>
-        <attribute name="label">Stop Processes</attribute>
+        <attribute name="label" translatable="yes">Stop Processes</attribute>
       </item>
     </section>
     <section>
       <item>
         <attribute name="action">win.open-prefix</attribute>
-        <attribute name="label">Open Files</attribute>
+        <attribute name="label" translatable="yes">Open Files</attribute>
       </item>
     </section>
     <section>
@@ -142,26 +142,26 @@
     <section>
       <item>
         <attribute name="action">win.delete-studio</attribute>
-        <attribute name="label">Uninstall Studio</attribute>
+        <attribute name="label" translatable="yes">Uninstall Studio</attribute>
       </item>
       <item>
         <attribute name="action">win.delete-prefix</attribute>
-        <attribute name="label">Delete Prefix Data</attribute>
+        <attribute name="label" translatable="yes">Delete Prefix Data</attribute>
       </item>
     </section>
   </menu>
   <menu id="menumodel-app">
     <item>
       <attribute name="action">win.about</attribute>
-      <attribute name="label">About Vinegar</attribute>
+      <attribute name="label" translatable="yes">About Vinegar</attribute>
     </item>
     <item>
       <attribute name="action">win.clear-cache</attribute>
-      <attribute name="label">Clear Cache</attribute>
+      <attribute name="label" translatable="yes">Clear Cache</attribute>
     </item>
     <item>
       <attribute name="action">win.open-logs</attribute>
-      <attribute name="label">Open Logs</attribute>
+      <attribute name="label" translatable="yes">Open Logs</attribute>
     </item>
   </menu>
 </interface>

@@ -12,6 +12,7 @@ import (
 	"github.com/jwijenbergh/puregotk/v4/adw"
 	"github.com/jwijenbergh/puregotk/v4/gio"
 	"github.com/jwijenbergh/puregotk/v4/gtk"
+	"github.com/pojntfx/go-gettext/pkg/i18n"
 	"github.com/sewnie/rbxweb"
 	"github.com/sewnie/wine"
 	"github.com/vinegarhq/vinegar/internal/config"
@@ -183,8 +184,8 @@ func (a *app) showError(e error) {
 	// In a bootstrapper context, the window is destroyed to show the
 	// error instead, which will make the GtkApplication exit.
 	a.Hold()
-	d := adw.NewAlertDialog("Something went wrong", e.Error())
-	d.AddResponses("okay", "Ok", "open", "Open Log")
+	d := adw.NewAlertDialog(i18n.Local("Something went wrong"), i18n.Local(e.Error()))
+	d.AddResponses("okay", i18n.Local("Ok"), "open", i18n.Local("Open Log"))
 	d.SetCloseResponse("okay")
 	d.SetDefaultResponse("okay")
 	d.SetResponseAppearance("open", adw.ResponseSuggestedValue)

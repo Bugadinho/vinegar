@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/jwijenbergh/puregotk/v4/adw"
+	"github.com/pojntfx/go-gettext/pkg/i18n"
 )
 
 // Enum reflection is impossible without an interface to get
@@ -56,15 +57,20 @@ func (p *StructPage) addField(sf reflect.StructField, v reflect.Value) {
 		return
 	}
 
+	displayGroup := groupName
+	if displayGroup != "" {
+		displayGroup = i18n.Local(groupName)
+	}
+
 	var group *adw.PreferencesGroup
 	if v.Kind() == reflect.Map {
 		group = newMapGroup(v)
-		group.SetTitle(groupName)
+		group.SetTitle(displayGroup)
 		p.PreferencesPage.Add(group)
 	} else if group, ok = p.groups[groupName]; !ok {
 		group = adw.NewPreferencesGroup()
 		p.groups[groupName] = group
-		group.SetTitle(groupName)
+		group.SetTitle(displayGroup)
 		p.PreferencesPage.Add(group)
 	}
 
@@ -77,6 +83,10 @@ func (p *StructPage) addField(sf reflect.StructField, v reflect.Value) {
 		title = sf.Name
 	}
 
+	if title != "" {
+		title = i18n.Local(title)
+	}
+
 	fields := strings.Split(sf.Tag.Get("row"), ",")
 	description := fields[0]
 	option := ""
@@ -84,8 +94,16 @@ func (p *StructPage) addField(sf reflect.StructField, v reflect.Value) {
 		option = fields[1]
 	}
 
+	if description != "" {
+		description = i18n.Local(description)
+	}
+
 	if t, ok := reflect.TypeAssert[EntryToggler](v); ok {
-		opt := newOptionEntryRow(v, fields[1], t.Default())
+		if option != "" {
+			option = i18n.Local(option)
+		}
+
+		opt := newOptionEntryRow(v, option, t.Default())
 		opt.SetTitle(title)
 		opt.SetSubtitle(description)
 		group.Add(&opt.Widget)

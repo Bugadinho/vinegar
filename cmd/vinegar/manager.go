@@ -8,6 +8,7 @@ import (
 	"github.com/jwijenbergh/puregotk/v4/gio"
 	"github.com/jwijenbergh/puregotk/v4/gobject"
 	"github.com/jwijenbergh/puregotk/v4/gtk"
+	"github.com/pojntfx/go-gettext/pkg/i18n"
 	"github.com/vinegarhq/vinegar/internal/adwaux"
 	"github.com/vinegarhq/vinegar/internal/dirs"
 	"github.com/vinegarhq/vinegar/internal/gutil"
@@ -99,13 +100,13 @@ func (m *manager) updateRun() {
 	btn.SetIconName("media-playback-start-symbolic")
 	if len(m.boot.procs) > 0 {
 		btn.SetIconName("media-playback-stop-symbolic")
-		btn.SetLabel("Stop")
+		btn.SetLabel(i18n.Local("Stop"))
 		return
 	}
 	if m.pfx.Exists() {
-		btn.SetLabel("Run Studio")
+		btn.SetLabel(i18n.Local("Run Studio"))
 	} else {
-		btn.SetLabel("Initialize")
+		btn.SetLabel(i18n.Local("Initialize"))
 	}
 }
 

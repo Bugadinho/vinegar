@@ -12,6 +12,7 @@ import (
 
 	"github.com/jwijenbergh/puregotk/v4/adw"
 	"github.com/jwijenbergh/puregotk/v4/gtk"
+	"github.com/pojntfx/go-gettext/pkg/i18n"
 	"github.com/vinegarhq/vinegar/internal/dirs"
 	"github.com/vinegarhq/vinegar/internal/gutil"
 	"github.com/vinegarhq/vinegar/internal/logging"
@@ -127,7 +128,7 @@ func (m *manager) killPrefix() error {
 		return err
 	}
 
-	m.showToast("Stopped all processes")
+	m.showToast(i18n.Local("Stopped all processes"))
 	return nil
 }
 
@@ -139,7 +140,7 @@ func (m *manager) deletePrefixes() error {
 		return err
 	}
 
-	m.showToast("Deleted all data")
+	m.showToast(i18n.Local("Deleted all data"))
 	m.wine.SetSensitive(false)
 	return nil
 }
@@ -151,7 +152,7 @@ func (m *manager) deleteDeployments() error {
 		return err
 	}
 
-	m.showToast("Uninstalled studio")
+	m.showToast(i18n.Local("Uninstalled studio"))
 	return nil
 }
 
@@ -174,6 +175,6 @@ func (m *manager) clearCache() error {
 		return err
 	}
 
-	m.showToast("Cleared cache")
+	m.showToast(i18n.Local("Cleared cache"))
 	return nil
 }
