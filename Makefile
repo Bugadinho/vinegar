@@ -9,6 +9,7 @@ MIMEPREFIX  = $(PREFIX)/share/mime
 ICONPREFIX  = $(PREFIX)/share/icons/hicolor
 LIBPREFIX   = $(PREFIX)/lib
 LAYERPREFIX = $(PREFIX)/share/vulkan/explicit_layer.d
+LOCALEPREFIX  = $(PREFIX)/share/locale
 
 CXX ?= c++
 
@@ -16,14 +17,19 @@ PKG_CONFIG = pkg-config
 INCS != $(PKG_CONFIG) --cflags vulkan
 
 GO         ?= go
-GO_LDFLAGS ?= -s -w
+GO_LDFLAGS ?= -s -w -X main.LocaleDir="$(LOCALEPREFIX)"
+
+%.mo: %.po
+	msgfmt $< -o $@
 
 SOURCES != find . -type f -name "*.go" # for automatically re-building vinegar
+LOCALES != find data/po/. -type f -name "*.po" # for automatically re-building locales
 
 RESOURCE = internal/gutil/vinegar.gresource
 VKLAYER = layer/libVkLayer_VINEGAR_VinegarLayer.so
+MO_FILES = $(LOCALES:.po=.mo)
 
-all: vinegar $(VKLAYER)
+all: vinegar $(VKLAYER) $(MO_FILES)
 
 vinegar: $(SOURCES) $(RESOURCE)
 	$(GO) build $(GOFLAGS) -ldflags="$(GO_LDFLAGS)" ./cmd/vinegar
@@ -43,6 +49,10 @@ install: all
 	install -Dm644 data/icons/roblox-studio.svg $(DESTDIR)$(ICONPREFIX)/scalable/apps/$(ID).studio.svg
 	install -Dm644 $(VKLAYER) -t $(DESTDIR)$(LIBPREFIX)
 	install -Dm644 layer/VkLayer_VINEGAR_VinegarLayer.json -t $(DESTDIR)$(LAYERPREFIX)
+	for mo in $(MO_FILES); do \
+		lang=$$(basename "$$mo" .mo); \
+		install -Dm644 "$$mo" $(DESTDIR)$(LOCALEPREFIX)/$$lang/LC_MESSAGES/vinegar.mo; \
+	done
 
 host:
 	gtk-update-icon-cache -f -t $(DESTDIR)$(ICONPREFIX)
@@ -60,9 +70,10 @@ uninstall:
 		$(DESTDIR)$(ICONPREFIX)/scalable/apps/$(ID).svg \
 		$(DESTDIR)$(ICONPREFIX)/scalable/apps/$(ID).studio.svg \
 		$(DESTDIR)$(LIBPREFIX)/libVkLayer_VINEGAR_VinegarLayer.so \
-		$(DESTDIR)$(LAYERPREFIX)/VkLayer_VINEGAR_VinegarLayer.json
+		$(DESTDIR)$(LAYERPREFIX)/VkLayer_VINEGAR_VinegarLayer.json \
+		$(DESTDIR)$(LOCALEPREFIX)/*/LC_MESSAGES/vinegar.mo
 
 clean:
-	rm -f vinegar $(RESOURCE) $(VKLAYER)
+	rm -f vinegar $(RESOURCE) $(VKLAYER) $(MO_FILES)
 	
 .PHONY: all install uninstall clean
